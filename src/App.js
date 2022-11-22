@@ -1,24 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
+import { Table } from 'antd';
+import { useEffect, useState } from 'react';
 
 function App() {
+
+  const [data , setData] = useState([])
+
+  useEffect(()=>{
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(json => {
+      json.map(i => {
+        i.key = i.id
+      })
+      setData(json)
+    })
+  },[])
+
+  const deleteRecord  = (record) => {
+    console.log(record)
+    setData(prev => prev.filter(i => i!==record))
+  }
+
+  const columns = [
+    {
+      title:'Id',
+      dataIndex:'id',
+      key:'Id'
+    },
+    {
+      title: 'Name',
+      dataIndex:'name',
+      key:'Name'
+    },
+    {
+      title:'Email',
+      dataIndex:'email',
+      key:'Email'
+    },
+    {
+      title:'Website',
+      dataIndex:'website',
+      key:'Website'
+    },
+    {
+      title:'Action',
+      render: (record)=>  <button onClick={() => deleteRecord(record)} style={{color:'blue',border:'none',background:'transparent',textDecoration:'underline',cursor:'pointer'}}>Delete</button>
+    }
+  ]
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Table
+      dataSource={data}
+      columns={columns}
+      expandable={{
+        expandedRowRender : () => {
+          return <Table
+            dataSource={data}
+            columns={columns}
+          >
+
+          </Table>
+        }
+      }}
+    >
+
+    </Table>
   );
 }
 
