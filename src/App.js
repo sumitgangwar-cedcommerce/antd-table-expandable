@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import { Checkbox, Table } from 'antd';
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -52,6 +52,12 @@ function App() {
     <Table
       dataSource={data}
       columns={columns}
+      rowSelection={{
+        type:'checkbox',
+        onChange:(selectedRowKeys, selectedRows)=>{
+          alert(`${selectedRows.length} row selected`)
+        }
+      }}
       expandable={{
         expandedRowRender : () => {
           return <Table
